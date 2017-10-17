@@ -164,71 +164,91 @@ describe('Variant Client', function() {
     });
   });
 
-/*
+  describe('#test_query_many()', () => {
+    var original_results = []
 
-    def test_querymany(self):
-        qres = self.mv.querymany(self.query_list1, verbose=False)
-        self.assertEqual(len(qres), 9)
+    it('should accept array of ids', () => {
+      return client.query_many(query_list1)
+      .then((qres) => {
+        original_results = qres
+        assert.equal(qres.length, query_list1.length)
+      })
+    });
+    it('should accept comma seperated string of ids', () => {
+      return client.query_many(query_list1.join(','))
+      .then((qres) => {
+        assert.deepEqual(qres, original_results)
+      })
+    });
+    it('should accept scope parameter', () => {
+      return client.query_many(['rs58991260', 'rs2500'],
+          {scopes: 'dbsnp.rsid'})
+      .then((qres) => {
+        assert.equal(qres.length, 2)
+      })
+    });
+    it('should accept scope parameter', () => {
+      return client.query_many(['RCV000083620', 'RCV000083611', 'RCV000083584'],
+          {scopes: 'clinvar.rcv_accession'})
+      .then((qres) => {
+        assert.equal(qres.length, 3)
+      })
+    });
+    it('should accept multiple scope parameters', () => {
+      return client.query_many(['rs2500', 'RCV000083611', 'COSM1392449'],
+          {scopes: 'clinvar.rcv_accession,dbsnp.rsid,cosmic.cosmic_id'})
+      .then((qres) => {
+        assert.equal(qres.length, 3)
+      })
+    });
+    it('should accept fields as an array', () => {
+      return client.query_many(['COSM1362966', 'COSM990046', 'COSM1392449'],
+          {scopes: 'cosmic.cosmic_id', fields: ['cosmic.tumor_site', 'cosmic.cosmic_id']})
+      .then((qres) => {
+        assert.equal(qres.length, 3)
+      })
+    });
+    it('should accept fields as a string', () => {
+      return client.query_many(['COSM1362966', 'COSM990046', 'COSM1392449'],
+          {scopes: 'cosmic.cosmic_id', fields:'cosmic.tumor_site,cosmic.cosmic_id'})
+      .then((qres) => {
+        assert.equal(qres.length, 3)
+      })
+    });
+    it('should return notfound', () => {
+      return client.query_many(['rs58991260', 'rs2500', 'NA_TEST'],
+          {scopes: 'clinvar.rcv_accession,dbsnp.rsid,cosmic.cosmic_id'})
+      .then((qres) => {
+        assert.equal(qres.length, 3)
+        assert.deepEqual(qres[2], {"query": 'NA_TEST', "notfound": true})
+      })
+    });
+    it('should return the same results despite step', () => {
+      var qres1, qres2;
+      var original_step = client.get_step
 
-        self.mv.step = 4
-        # test input as a string
-        qres2 = self.mv.querymany(','.join(self.query_list1), verbose=False)
-        self.assertEqual(qres, qres2)
-        # test input as a tuple
-        qres2 = self.mv.querymany(tuple(self.query_list1), verbose=False)
-        self.assertEqual(qres, qres2)
-        # test input as a iterator
-        qres2 = self.mv.querymany(iter(self.query_list1), verbose=False)
-        self.assertEqual(qres, qres2)
-        self.mv.step = 1000
+      return client.query_many(query_list2, {scopes: 'dbsnp.rsid'})
+      .then((qres) => {
+        qres1 = qres
+      }).then(() => {
+        client.set_step(3)
+        return client.query_many(query_list2, {scopes: 'dbsnp.rsid'})
+      }).then((qres) => {
+        qres2 = qres;
+      }).then(() => {
+        client.set_step(original_step)
 
-    def test_querymany_with_scopes(self):
-        qres = self.mv.querymany(['rs58991260', 'rs2500'], scopes='dbsnp.rsid', verbose=False)
-        self.assertEqual(len(qres), 2)
-
-        qres = self.mv.querymany(['RCV000083620', 'RCV000083611', 'RCV000083584'], scopes='clinvar.rcv_accession', verbose=False)
-        self.assertEqual(len(qres), 3)
-
-        qres = self.mv.querymany(['rs2500', 'RCV000083611', 'COSM1392449'],
-                                 scopes='clinvar.rcv_accession,dbsnp.rsid,cosmic.cosmic_id', verbose=False)
-        self.assertEqual(len(qres), 3)
-
-    def test_querymany_fields(self):
-        ids = ['COSM1362966', 'COSM990046', 'COSM1392449']
-        qres1 = self.mv.querymany(ids, scopes='cosmic.cosmic_id', fields=['cosmic.tumor_site', 'cosmic.cosmic_id'], verbose=False)
-        self.assertEqual(len(qres1), 3)
-
-        qres2 = self.mv.querymany(ids, scopes='cosmic.cosmic_id', fields='cosmic.tumor_site,cosmic.cosmic_id', verbose=False)
-        self.assertEqual(len(qres2), 3)
-
-        self.assertEqual(qres1, qres2)
-
-    def test_querymany_notfound(self):
-        qres = self.mv.querymany(['rs58991260', 'rs2500', 'NA_TEST'], scopes='dbsnp.rsid', verbose=False)
-        self.assertEqual(len(qres), 3)
-        self.assertEqual(qres[2], {"query": 'NA_TEST', "notfound": True})
-
-    def test_querymany_dataframe(self):
-        if not pandas_avail:
-            from nose.plugins.skip import SkipTest
-            raise SkipTest
-        qres = self.mv.querymany(self.query_list2, scopes='dbsnp.rsid', fields='dbsnp', as_dataframe=True, verbose=False)
-        self.assertTrue(isinstance(qres, DataFrame))
-        self.assertTrue('dbsnp.vartype' in qres.columns)
-        self.assertEqual(set(self.query_list2), set(qres.index))
-
-    def test_querymany_step(self):
-        qres1 = self.mv.querymany(self.query_list2, scopes='dbsnp.rsid', verbose=False)
-        default_step = self.mv.step
-        self.mv.step = 3
-        qres2 = self.mv.querymany(self.query_list2, scopes='dbsnp.rsid', verbose=False)
-        self.mv.step = default_step
-        self.assertEqual(qres1, qres2)
-
-    def test_get_fields(self):
-        fields = self.mv.get_fields()
-        self.assertTrue('dbsnp' in fields.keys())
-        self.assertTrue('clinvar' in fields.keys())
-*/
+        assert.equal(qres1.length, qres2.length)
+        assert.deepEqual(qres1.hits, qres2.hits)
+      });
+    }).timeout(20 * 1000);
+    it('should return fields', () => {
+      return client.get_fields()
+      .then((fields) => {
+        assert.ok(fields.dbsnp)
+        assert.ok(fields.clinvar)
+      })
+    });
+  });
 
 });
