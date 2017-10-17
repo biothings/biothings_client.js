@@ -80,34 +80,39 @@ function api_client(type, options) {
     reset_step: function() {
       step = options.default_step
     },
-    get_metadata: function() {
+    get_metadata: function(params) {
+      params = params || {}
       var final_url = options.url + options.metadata_endpoint
-      return that.request_get(final_url, {}, false)
+      return that.request_get(final_url, params, false)
     },
-    get_annotation: function(id, fields) {
+    get_annotation: function(id, fields, params) {
+      params = params || {}
+      
       if(fields instanceof Array){
         fields = fields.join(",")
       }
       var final_url = options.url + options.annotation_endpoint + id
-      if(fields){
-        return that.request_get(final_url, {fields: fields}, true);
+      if(fields) {
+        params.fields = fields
       }
-      else{
-        return that.request_get(final_url, {}, true)
-      }
+      return that.request_get(final_url, params, true)
     },
-    get_annotations: function(ids) {
+    get_annotations: function(ids, params) {
+      params = params || {}
+
       if(typeof(ids) == "string") {
         ids = ids.split(",")
       }
 
       var final_url = options.url + options.annotation_endpoint
       if(ids.length < options.step) {
+        params.ids = ids.join(",")
         return that.request_post(final_url, {ids: ids.join(",")})
       } else {
         chunk_function(ids, 
           (id_chunk) =>  {
-            return that.request_post(final_url, {ids: id_chunk.join(",")})
+            params.ids = id_chunk.join(",")
+            return that.request_post(final_url, params)
           },
           (response) => {
             return response
@@ -115,12 +120,14 @@ function api_client(type, options) {
       }
 
     },
-    get_fields: function(search) {
+    get_fields: function(search, params) {
+      params = params || {}
       var final_url = options.url + options.metadata_fields_endpoint
-      if(search)
-        return that.request_get(final_url, {search: search})
-      else
-        return that.request_get(final_url, {})
+      if(search) {
+        params.search = search
+      }
+
+      return that.request_get(final_url, params)
     },
     query: function(querystring, args, method) {
       method = method || "GET"
