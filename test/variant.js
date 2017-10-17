@@ -1,6 +1,5 @@
 var biothings_client = require("../")
 var assert = require('assert');
-var fs = require('fs');
 
 describe('Variant Client', function() {
   var client = biothings_client.get_client("variant")

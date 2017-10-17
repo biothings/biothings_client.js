@@ -4,11 +4,6 @@ var client_configs = require('./client_configs.json');
 var extend = require('extend')
 
 axios.defaults.headers['user-agent'] = "biothings_client Node.JS package"
-//axios.defaults.timeout = ????
-axios.defaults.proxy = {
-  host: '127.0.0.1',
-  port: 8888
-}
 
 common_args = 
 {
