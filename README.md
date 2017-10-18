@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/biothings/biothings_client.js.svg?branch=master)](https://travis-ci.org/biothings/biothings_client.js)
+
 # biothings_client.js
 This is a unified Javascript client for BioThings API
 
