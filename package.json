@@ -5,7 +5,8 @@
   "main": "client.js",
   "private": true,
   "scripts": {
-    "test": "mocha test/gene.js test/variant.js"
+    "test": "mocha test/gene.js test/variant.js -R markdown",
+    "minify": "node -e \"require('node-minify').minify({compressor: 'gcc', input: 'client.js', output: 'dist/biothings_client.min.js'})\""
   },
   "keywords": [
     "biothings",

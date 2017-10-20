@@ -1,4 +1,4 @@
-var biothings_client = require("../")
+var biothings_client = require("../client.js")
 var assert = require('assert');
 
 describe('Gene Client', function() {
