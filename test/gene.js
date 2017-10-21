@@ -1,4 +1,4 @@
-var biothings_client = require("../client.js")
+var biothings_client = require("../client")
 var assert = require('assert');
 
 describe('Gene Client', function() {
@@ -73,7 +73,7 @@ describe('Gene Client', function() {
     it('should return all results when using fetch_all', () => {
       return client.query('_exists_:pdb')
         .then((qres) => {
-          total = qres.total
+          var total = qres.total
 
           return client.query('_exists_:pdb',
             {fields: 'pdb', fetch_all: true})

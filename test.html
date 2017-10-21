@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Biothings Client tests</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mocha/4.0.1/mocha.css" rel="stylesheet" />
+</head>
+<body>
+  <div id="mocha"><p><a href=".">Index</a></p></div>
+  <div id="messages"></div>
+  <div id="fixtures"></div>
+  <script src="https://cdn.rawgit.com/jquery/jquery/2.1.4/dist/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.js"></script>
+  <script>
+    require.config({
+      baseUrl: '.',
+      shim: {
+        'biothings_client': {
+          deps: ['axios', 'extend'],
+          exports: 'biothings_client'
+        },
+        'gene_test': {
+          deps: ['biothings_client', 'mocha', '../client'],
+          exports: 'gene_test'
+        },
+        'variant_test': {
+          deps: ['biothings_client', 'mocha', '../client'],
+          exports: 'variant_test'
+        },
+        '../client': {
+          deps: ['biothings_client'],
+          exports: '../client'
+        }
+      },
+      paths: {
+        'biothings_client': 'dist/biothings_client',
+        'gene_test': 'test/gene',
+        'variant_test': 'test/variant'
+      },
+      packages: [
+        {
+          name: 'axios',
+          location: 'https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2',
+          main: 'axios.js'
+        },
+        {
+          name: 'chai',
+          location: 'https://cdnjs.cloudflare.com/ajax/libs/chai/4.1.2',
+          main: 'chai.js'
+        },
+        {
+          name: 'mochajs',
+          location: 'https://cdnjs.cloudflare.com/ajax/libs/mocha/4.0.1',
+          main: 'mocha.js'
+        }
+      ]
+    })
+  </script>
+  <script>
+    define('extend', [], () => {
+      return $.extend;
+    });
+
+    define('assert', ['chai'], (chai) => {
+      return chai.assert
+    })
+
+    define('mocha', ['mochajs'], () => {
+      return mocha;
+    })
+    define('../client', ['biothings_client'], (bc) => {
+      return bc
+    })
+
+  </script>
+  
+  <script>
+    require(['biothings_client', 'assert', 'mocha'], (bc, a) => {
+      mocha.setup('bdd')
+    })
+
+    require(['gene_test', 'variant_test'], () => {
+      mocha.checkLeaks();
+      mocha.globals(['jQuery', 'hasCert']);
+      mocha.run();
+    })
+
+  </script>
+</body>
+</html>

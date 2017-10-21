@@ -1,4 +1,4 @@
-var biothings_client = require("../client.js")
+var biothings_client = require("../client")
 var assert = require('assert');
 
 describe('Variant Client', function() {

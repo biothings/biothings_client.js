@@ -132,7 +132,7 @@ function api_client(type, options) {
     },
     query: function(querystring, args, method) {
       method = method || "GET"
-      final_args = {q: querystring}
+      var final_args = {q: querystring}
       extend(final_args, args)
       var final_url = options.url + options.query_endpoint
 
@@ -149,11 +149,11 @@ function api_client(type, options) {
           var final_results = result.hits
           final_args["scroll_id"] = result._scroll_id
 
-          remining_items_promise = Promise.resolve(result)
+          var remaining_items_promise = Promise.resolve(result)
 
           for(var chunk = options.step; chunk < total; chunk += options.step)
           {
-            remining_items_promise = remining_items_promise.then((r) => {
+            remaining_items_promise = remaining_items_promise.then((r) => {
               return request_fn(final_url, final_args, false).then((r) => {
                 final_results = final_results.concat(r.hits)
                 return r;
@@ -161,7 +161,7 @@ function api_client(type, options) {
             })
           }
 
-          return remining_items_promise.then(() => {return final_results;}) 
+          return remaining_items_promise.then(() => {return final_results;}) 
         });
         return final_sequence
       }
