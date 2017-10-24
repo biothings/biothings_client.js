@@ -2,6 +2,7 @@ var axios = require('axios')
 var r = axios
 var client_configs = require('./client_configs.json');
 var extend = require('extend')
+var client_extensions = require('./client_extension')
 
 axios.defaults.headers['user-agent'] = "biothings_client Node.JS package"
 
@@ -165,7 +166,17 @@ function api_client(type, options) {
         return final_sequence
       }
       else {
-        return request_fn(final_url, final_args, false)
+        return request_fn(final_url, final_args, false).then(r => {
+          if(r instanceof Array) {
+            for(var i in r){
+              delete r[i]["_score"] 
+            }
+          }
+          if(r["_score"]) {
+            delete r["_score"]
+          }
+          return r
+        })
       }
     },
     query_many: function(queryterms, args) {
@@ -228,6 +239,10 @@ function api_client(type, options) {
 
   that["get" + type] = that.get_annotation
   that["get" + type + "s"] = that.get_annotations
+
+  if(client_extensions[type]) {
+    extend(that, client_extensions[type](that))
+  }
 
   return that;
 }

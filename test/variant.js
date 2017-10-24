@@ -27,23 +27,18 @@ describe('Variant Client', function() {
     'rs372452565'
   ]
 
-/*
-    def test_format_hgvs(self):
-        self.assertEqual(self.mv.format_hgvs("1", 35366, "C", "T"),
-                         'chr1:g.35366C>T')
-        self.assertEqual(self.mv.format_hgvs("chr2", 17142, "G", "GA"),
-                         'chr2:g.17142_17143insA')
-        self.assertEqual(self.mv.format_hgvs("1", 10019, "TA", "T"),
-                         'chr1:g.10020del')
-        self.assertEqual(self.mv.format_hgvs("MT", 8270, "CACCCCCTCT", "C"),
-                         'chrMT:g.8271_8279del')
-        self.assertEqual(self.mv.format_hgvs("7", 15903, "G", "GC"),
-                         'chr7:g.15903_15904insC')
-        self.assertEqual(self.mv.format_hgvs("X", 107930849, "GGA", "C"),
-                         'chrX:g.107930849_107930851delinsC')
-        self.assertEqual(self.mv.format_hgvs("20", 1234567, "GTC", "GTCT"),
-                         'chr20:g.1234569_1234570insT')
-*/
+
+  describe('#test_format_hgvs()', () => {
+    it('should format text properly', () => {
+        assert.equal(client.format_hgvs("1", 35366, "C", "T"), 'chr1:g.35366C>T')
+        assert.equal(client.format_hgvs("chr2", 17142, "G", "GA"), 'chr2:g.17142_17143insA')
+        assert.equal(client.format_hgvs("1", 10019, "TA", "T"), 'chr1:g.10020del')
+        assert.equal(client.format_hgvs("MT", 8270, "CACCCCCTCT", "C"), 'chrMT:g.8271_8279del')
+        assert.equal(client.format_hgvs("7", 15903, "G", "GC"), 'chr7:g.15903_15904insC')
+        assert.equal(client.format_hgvs("X", 107930849, "GGA", "C"),'chrX:g.107930849_107930851delinsC')
+        assert.equal(client.format_hgvs("20", 1234567, "GTC", "GTCT"), 'chr20:g.1234569_1234570insT')
+    });
+  });
 
   describe('#test_metadata()', () => {
     it('should return metadata with stats', () => {
