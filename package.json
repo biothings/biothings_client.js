@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "mocha test/gene.js test/variant.js",
-    "minify": "browserify client.js -x axios -x extend -x @reactivex/rxjs --standalone biothings_client -o dist/biothings_client.js & node -e \"require('node-minify').minify({compressor: 'gcc', input: 'dist/biothings_client.js', output: 'dist/biothings_client.min.js'})\"",
+    "minify": "browserify client.js -x axios -x extend -x @reactivex/rxjs --standalone biothings_client -o dist/biothings_client.js & node -e \"require('node-minify').minify({compressor: 'gcc', input: 'dist/biothings_client.js', output: 'dist/biothings_client.min.js'})\""
   },
   "keywords": [
     "biothings",
