@@ -16,7 +16,7 @@
       baseUrl: '.',
       shim: {
         'biothings_client': {
-          deps: ['axios', 'extend'],
+          deps: ['axios', 'extend', '@reactivex/rxjs'],
           exports: 'biothings_client'
         },
         'gene_test': {
@@ -52,6 +52,11 @@
           name: 'mochajs',
           location: 'https://cdnjs.cloudflare.com/ajax/libs/mocha/4.0.1',
           main: 'mocha.js'
+        },
+        {
+          name: '@reactivex/rxjs',
+          location: 'https://unpkg.com/@reactivex/rxjs@5.5.2/dist/global',
+          main: 'Rx.js'
         }
       ]
     })

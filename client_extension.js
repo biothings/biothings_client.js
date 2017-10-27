@@ -76,7 +76,6 @@ module.exports = {
           if(ref[0] == alt[0]) {
             // if ref and alt overlap from the left, trim them first
             var [_chrom, _pos, _ref, _alt] = instance.normalize_vcf(chrom, pos, ref, alt)
-            console.log(_chrom)
             return instance.format_hgvs(_chrom, _pos, _ref, _alt)
           }
           else {
