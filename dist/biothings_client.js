@@ -6,7 +6,12 @@ var client_configs = require('./client_configs.json');
 var extend = require('extend')
 var client_extensions = require('./client_extension')
 
-axios.defaults.headers['user-agent'] = "biothings_client Node.JS package"
+var isBrowser=new Function("try {return this===window;}catch(e){ return false;}");
+
+if(!isBrowser)
+{
+  axios.defaults.headers['user-agent'] = "biothings_client Node.JS package"
+}
 
 var common_args = 
 {
