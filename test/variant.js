@@ -80,7 +80,7 @@ describe('Variant Client', function() {
         assert.equal(v_li[1]["_id"], query_list1[1])
         assert.equal(v_li[2]["_id"], query_list1[2])
       })
-    });
+    }).timeout(60 * 1000);
 
     it('should be valid when caleld with a comma seperated string', () => {
       return variant_client.getvariants(query_list1.join(",")).then((v_li) => {
@@ -89,7 +89,7 @@ describe('Variant Client', function() {
         assert.equal(v_li[1]["_id"], query_list1[1])
         assert.equal(v_li[2]["_id"], query_list1[2])
       })
-    });
+    }).timeout(60 * 1000);
   });
 
   describe('#test_query()', () => {
@@ -100,7 +100,7 @@ describe('Variant Client', function() {
         assert.ok(qres.hits)
         assert.equal(qres.hits.length, 5)
       })
-    });
+    }).timeout(60 * 1000);
     it('should return when queried by hgvs', () => {
       return variant_client.query('"NM_000048.3:c.566A>G"', 
                           {size: 5})
@@ -108,7 +108,7 @@ describe('Variant Client', function() {
         assert.ok(qres.hits)
         assert.equal(qres.hits.length, 1)
       })
-    });
+    }).timeout(60 * 1000);
     it('should return when queried by rsid', () => {
       var qres1, qres2;
 
@@ -127,7 +127,7 @@ describe('Variant Client', function() {
         qres2 = qres
         assert.ok(qres1, qres2)
       });
-    });
+    }).timeout(60 * 1000);
     it('should return when queried by symbol', () => {
       return variant_client.query('snpeff.ann.genename:cdk2')
       .then((qres) => {
@@ -142,7 +142,7 @@ describe('Variant Client', function() {
         assert.ok(qres.hits)
         assert.ok(qres.total >= 3)
       })
-    });
+    }).timeout(60 * 1000);
     it('should return all results when using the fetch all flag', () => {
       return variant_client.query('chr1:69500-70000', {fields: "chrom"})
         .then((qres) => {
@@ -177,48 +177,48 @@ describe('Variant Client', function() {
         original_results = qres
         assert.equal(qres.length, query_list1.length)
       })
-    });
+    }).timeout(30 * 1000);
     it('should accept comma seperated string of ids', () => {
       return variant_client.query_many(query_list1.join(','))
       .then((qres) => {
         assert.deepEqual(qres, original_results)
       })
-    });
+    }).timeout(30 * 1000);
     it('should accept scope parameter', () => {
       return variant_client.query_many(['rs58991260', 'rs2500'],
           {scopes: 'dbsnp.rsid'})
       .then((qres) => {
         assert.equal(qres.length, 2)
       })
-    });
+    }).timeout(30 * 1000);
     it('should accept scope parameter', () => {
       return variant_client.query_many(['RCV000083620', 'RCV000083611', 'RCV000083584'],
           {scopes: 'clinvar.rcv_accession'})
       .then((qres) => {
         assert.equal(qres.length, 3)
       })
-    });
+    }).timeout(30 * 1000);
     it('should accept multiple scope parameters', () => {
       return variant_client.query_many(['rs2500', 'RCV000083611', 'COSM1392449'],
           {scopes: 'clinvar.rcv_accession,dbsnp.rsid,cosmic.cosmic_id'})
       .then((qres) => {
         assert.equal(qres.length, 3)
       })
-    });
+    }).timeout(30 * 1000);
     it('should accept fields as an array', () => {
       return variant_client.query_many(['COSM1362966', 'COSM990046', 'COSM1392449'],
           {scopes: 'cosmic.cosmic_id', fields: ['cosmic.tumor_site', 'cosmic.cosmic_id']})
       .then((qres) => {
         assert.equal(qres.length, 3)
       })
-    });
+    }).timeout(30 * 1000);
     it('should accept fields as a string', () => {
       return variant_client.query_many(['COSM1362966', 'COSM990046', 'COSM1392449'],
           {scopes: 'cosmic.cosmic_id', fields:'cosmic.tumor_site,cosmic.cosmic_id'})
       .then((qres) => {
         assert.equal(qres.length, 3)
       })
-    });
+    }).timeout(30 * 1000);
     it('should return notfound', () => {
       return variant_client.query_many(['rs58991260', 'rs2500', 'NA_TEST'],
           {scopes: 'clinvar.rcv_accession,dbsnp.rsid,cosmic.cosmic_id'})
@@ -226,7 +226,7 @@ describe('Variant Client', function() {
         assert.equal(qres.length, 3)
         assert.deepEqual(qres[2], {"query": 'NA_TEST', "notfound": true})
       })
-    });
+    }).timeout(30 * 1000);
     it('should return the same results despite step', () => {
       var qres1, qres2;
       var original_step = variant_client.get_step
@@ -245,14 +245,14 @@ describe('Variant Client', function() {
         assert.equal(qres1.length, qres2.length)
         assert.deepEqual(qres1.hits, qres2.hits)
       });
-    }).timeout(20 * 1000);
+    }).timeout(30 * 1000);
     it('should return fields', () => {
       return variant_client.get_fields()
       .then((fields) => {
         assert.ok(fields.dbsnp)
         assert.ok(fields.clinvar)
       })
-    });
+    }).timeout(30 * 1000);
   });
 
 });
