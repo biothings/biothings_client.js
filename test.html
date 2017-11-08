@@ -9,15 +9,30 @@
   <div id="mocha"><p><a href=".">Index</a></p></div>
   <div id="messages"></div>
   <div id="fixtures"></div>
-  <script src="https://cdn.rawgit.com/jquery/jquery/2.1.4/dist/jquery.min.js"></script>
+  
+  <script type="text/javascript" src="https://cdn.rawgit.com/jquery/jquery/2.1.4/dist/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.js"></script>
+
   <script>
     require.config({
-      baseUrl: '.',
+      nodeRequire: require,
+      paths: {
+        'axios': 'https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios',
+        '@reactivex/rxjs': 'https://unpkg.com/@reactivex/rxjs@5.5.2/dist/global/Rx',
+        'mocha': 'https://cdnjs.cloudflare.com/ajax/libs/mocha/4.0.1/mocha',
+        'chai': 'https://cdnjs.cloudflare.com/ajax/libs/chai/4.1.2/chai',
+        'biothings_client': 'dist/biothings_client',
+        'gene_test': 'test/gene',
+        'variant_test': 'test/variant'
+      },
       shim: {
         'biothings_client': {
-          deps: ['axios', 'extend', '@reactivex/rxjs'],
+          deps: ['axios', 'extend', '@reactivex/rxjs', 'assert'],
           exports: 'biothings_client'
+        },
+        '../client': {
+          deps: ['biothings_client'],
+          exports: '../client'
         },
         'gene_test': {
           deps: ['biothings_client', 'mocha', '../client'],
@@ -26,70 +41,33 @@
         'variant_test': {
           deps: ['biothings_client', 'mocha', '../client'],
           exports: 'variant_test'
-        },
-        '../client': {
-          deps: ['biothings_client'],
-          exports: '../client'
         }
-      },
-      paths: {
-        'biothings_client': 'dist/biothings_client',
-        'gene_test': 'test/gene',
-        'variant_test': 'test/variant'
-      },
-      packages: [
-        {
-          name: 'axios',
-          location: 'https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2',
-          main: 'axios.js'
-        },
-        {
-          name: 'chai',
-          location: 'https://cdnjs.cloudflare.com/ajax/libs/chai/4.1.2',
-          main: 'chai.js'
-        },
-        {
-          name: 'mochajs',
-          location: 'https://cdnjs.cloudflare.com/ajax/libs/mocha/4.0.1',
-          main: 'mocha.js'
-        },
-        {
-          name: '@reactivex/rxjs',
-          location: 'https://unpkg.com/@reactivex/rxjs@5.5.2/dist/global',
-          main: 'Rx.js'
-        }
-      ]
+      }
     })
-  </script>
-  <script>
+    //Avoid needing to import a whole library for extend, just use jQuery's
     define('extend', [], () => {
       return $.extend;
     });
-
+    //Don't have the node built-in assert library/function substitue chai's
     define('assert', ['chai'], (chai) => {
       return chai.assert
     })
-
-    define('mocha', ['mochajs'], () => {
-      return mocha;
-    })
+    //'Proxy' the request for the client to load use the module loaded via requirejs
     define('../client', ['biothings_client'], (bc) => {
       return bc
     })
-
   </script>
   
   <script>
-    require(['biothings_client', 'assert', 'mocha'], (bc, a) => {
+    require(['mocha'], (m) => {
       mocha.setup('bdd')
     })
-
+    
     require(['gene_test', 'variant_test'], () => {
       mocha.checkLeaks();
       mocha.globals(['jQuery', 'hasCert']);
       mocha.run();
     })
-
   </script>
 </body>
 </html>
