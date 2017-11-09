@@ -1,5 +1,4 @@
 var axios = require('axios')
-var Rx = require('@reactivex/rxjs');
 var r = axios
 var client_configs = require('./client_configs.json');
 var extend = require('extend')
@@ -12,7 +11,7 @@ if(!isBrowser)
   axios.defaults.headers['user-agent'] = "biothings_client Node.JS package"
 }
 
-var common_args = 
+var common_args =
 {
   query_endpoint: "/query/",
   metadata_endpoint: "/metadata",
@@ -99,6 +98,7 @@ function api_client(type, options) {
   };
 
   var query_fetch_all = (final_url, args, request_fn) => {
+    var Rx = require('@reactivex/rxjs');
     var query_iterator;
     var result_observable;
     var query_iterator_fn = function *() {
@@ -124,7 +124,7 @@ function api_client(type, options) {
         {
           for(var hit of results.hits)
           {
-            observer.next(hit) //Give data up to subscriber 
+            observer.next(hit) //Give data up to subscriber
           }
         }
         else
@@ -211,7 +211,7 @@ function api_client(type, options) {
 
   /**
    * Returns the current page step
-   * @returns {number} 
+   * @returns {number}
    */
   this.get_step = function() {
     return options.step;
@@ -219,8 +219,8 @@ function api_client(type, options) {
 
   /**
    * Sets the page step
-   * @param {number} step - How many 
-   * @returns {number} 
+   * @param {number} step - How many
+   * @returns {number}
    */
   this.set_step = function(step) {
     options.step = step;
@@ -255,7 +255,7 @@ function api_client(type, options) {
    */
   this.get_annotation = function(id, fields, params) {
     params = params || {}
-    
+
     if(fields instanceof Array){
       fields = fields.join(",")
     }
@@ -295,7 +295,7 @@ function api_client(type, options) {
       params.ids = id_list.join(",")
       return request_post(final_url, {ids: id_list.join(",")})
     } else {
-      return chunk_function(id_list, 
+      return chunk_function(id_list,
         (id_chunk) =>  {
           params.ids = id_chunk.join(",")
           return request_post(final_url, params)
