@@ -1,8 +1,8 @@
-var axios = require('axios')
-var r = axios
+var axios = require('axios');
+var r = axios;
 var client_configs = require('./client_configs.json');
-var extend = require('extend')
-var client_extensions = require('./client_extension')
+var extend = Object.assign || require('extend');
+var client_extensions = require('./client_extension');
 
 var isBrowser=new Function("try {return this===window;}catch(e){ return false;}");
 
@@ -98,7 +98,18 @@ function api_client(type, options) {
   };
 
   var query_fetch_all = (final_url, args, request_fn) => {
-    var Rx = require('@reactivex/rxjs');
+    try {
+        var Rx = require('@reactivex/rxjs');
+    }
+    catch (e) {
+        if (e instanceof Error && e.code === "MODULE_NOT_FOUND"){
+            console.error('Error: "fetch_all" feature requires "@reactivex/rxjs" module.');
+            return;
+        }
+        else
+            throw e;
+    }
+
     var query_iterator;
     var result_observable;
     var query_iterator_fn = function *() {
