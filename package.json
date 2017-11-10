@@ -2,6 +2,7 @@
   "name": "biothings_client",
   "version": "1.0.1",
   "description": "Client for interfacing with BioThings APIs",
+  "homepage": "http://biothings.io",
   "main": "client.js",
   "private": false,
   "scripts": {
