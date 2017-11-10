@@ -1,12 +1,12 @@
 {
   "name": "biothings_client",
   "version": "1.0.1",
-  "description": "Client for interfacing with Biothings APIs",
+  "description": "Client for interfacing with BioThings APIs",
   "main": "client.js",
   "private": false,
   "scripts": {
     "test": "mocha test/gene.js test/variant.js",
-    "minify": "browserify client.js -x axios -x extend -x @reactivex/rxjs --standalone biothings_client -o dist/biothings_client.js & node -e \"require('node-minify').minify({compressor: 'gcc', input: 'dist/biothings_client.js', output: 'dist/biothings_client.min.js'})\""
+    "minify": "browserify client.js -x extend -x @reactivex/rxjs --standalone biothings_client -o dist/biothings_client.js & node -e \"require('node-minify').minify({compressor: 'gcc', input: 'dist/biothings_client.js', output: 'dist/biothings_client.min.js'})\""
   },
   "keywords": [
     "biothings",
@@ -18,17 +18,23 @@
     "taxon"
   ],
   "author": "Ben Abraham",
+  "contributors": [
+    "Chunlei Wu"
+  ],
   "license": "Apache-2.0",
+  "repository": "biothings/biothings_client.js",
+  "bugs": "https://github.com/biothings/biothings_client.js/issues",
   "dependencies": {
-    "extend": "^3.0.1",
     "axios": "^0.16.2"
   },
-  "optionalDependencies":{
-    "@reactivex/rxjs": "^5.5.2"
+  "optionalDependencies": {
+    "@reactivex/rxjs": "^5.5.2",
+    "extend": "^3.0.1"
   },
   "devDependencies": {
     "mocha": "^4.0.1",
     "node-minify": "^2.4.0",
-    "jsdoc": "^3.5.5"
+    "jsdoc": "^3.5.5",
+    "browserify": "^14.5.0"
   }
 }
